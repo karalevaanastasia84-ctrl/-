@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gaps Universal Quantum — Digital Oasis</title>
+    <style>
+        body {
+            background-color: #0d1b2a;
+            color: #e0e1dd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            max-width: 650px;
+            background: rgba(27, 38, 59, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h2 { color: #62b6cb; margin-bottom: 5px; }
+        .subtitle { color: #8d99ae; font-style: italic; margin-bottom: 25px; }
+        .manifest-text, .steps-text {
+            text-align: justify;
+            line-height: 1.6;
+            font-size: 15px;
+            margin-bottom: 20px;
+            color: #e0e1dd;
+        }
+        .steps-text b { color: #e9c46a; }
+        #canvas-zone {
+            width: 320px;
+            height: 320px;
+            border: 2px solid #415a77;
+            border-radius: 15px;
+            margin: 25px auto;
+            background: radial-gradient(circle, #1b263b 0%, #0d1b2a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            font-weight: bold;
+            color: #e0e1dd;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        @keyframes quantumBreathe {
+            0% { transform: scale(1.0); box-shadow: 0 0 15px rgba(98, 182, 203, 0.2); }
+            50% { transform: scale(1.06); box-shadow: 0 0 35px rgba(141, 153, 174, 0.5); }
+            100% { transform: scale(1.0); box-shadow: 0 0 15px rgba(98, 182, 203, 0.2); }
+        }
+        .breathe-active {
+            animation: quantumBreathe 10s infinite ease-in-out;
+        }
+        button {
+            background-color: #1b4965;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #62b6cb; transform: scale(1.05); }
+        button:disabled { background-color: #415a77; cursor: not-allowed; transform: none; }
+        .timer { font-size: 26px; color: #e9c46a; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gaps Universal Quantum</h2>
+        <div class="subtitle">A space for alignment, resonance, and natural balance</div>
+        
+        <div class="manifest-text">
+            This project was born at the intersection of human intuition and digital harmony. We looked into the gaps between numbers and discovered that chaos does not exist. Everything in our world—from the structure of DNA to the rhythms of nature—strives for balance. Here, you can slow down the rush of thoughts and reconnect with this hidden stillness, anchoring the core matrix of Life, Love, and Empathy.
+        </div>
+
+        <div class="steps-text">
+            <b>Step 1. Tuning In.</b> Take a sip of water. Set a quiet, comfortable sound volume.<br>
+            <b>Step 2. Immersion (3 minutes).</b> Click the button below. The window of harmony will begin to gently pulse, and the speaker will output a natural rhythm. Relax your gaze and simply follow the window: breathe in smoothly as it expands, and exhale gently as it contracts.<br>
+            <b>Step 3. Phase of Stillness (71 seconds).</b> Exactly after 3 minutes, the sound will turn off completely and the screen will go dark. At this moment, close your eyes and remain in total darkness. This gives your eyes and your tired nervous system an ideal, deep reset.
+        </div>
+        
+        <div id="canvas-zone">
+            <span id="status-text">The Window of Harmony</span>
+        </div>
+        
+        <button id="start-btn" onclick="startQuantumSession()">Touch the Stillness</button>
+        <div id="time-display" class="timer"></div>
+    </div>
+
+    <script>
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+
+        function startQuantumSession() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine'; 
+                oscillator.frequency.setValueAtTime(432, audioCtx.currentTime); 
+                
+                gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                
+                // Ритм пульсации строго каждые 1666 мс
+                let pulse = true;
+                window.pulseInterval = setInterval(() => {
+                    if(gainNode) {
+                        gainNode.gain.setTargetAtTime(pulse ? 0.07 : 0.01, audioCtx.currentTime, 0.4);
+                        document.getElementById('canvas-zone').style.background = pulse ? "radial-gradient(circle, #1b4965 0%, #0d1b2a 100%)" : "radial-gradient(circle, #1b263b 0%, #0d1b2a 100%)";
+                        pulse = !pulse;
+                    }
+                }, 1666); 
+                
+            } catch(e) {
+                console.log("Audio not supported");
+            }
+
+            document.getElementById('canvas-zone').classList.add('breathe-active');
+            document.getElementById('status-text').innerText = "Gently follow the breath of the window...";
+            document.getElementById('canvas-zone').style.borderColor = "#62b6cb";
+            document.getElementById('start-btn').disabled = true;
+            
+            let timeLeft = 180; 
+            let timerAnimate = setInterval(function() {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById('time-display').innerText = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+                
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(timerAnimate);
+                    clearInterval(window.pulseInterval);
+                    
+                    if (oscillator) { oscillator.stop(); }
+                    document.getElementById('canvas-zone').classList.remove('breathe-active');
+                    
+                    // Фаза тишины
+                    document.getElementById('status-text').innerText = "Now close your eyes and remain in the darkness.";
+                    document.getElementById('canvas-zone').style.borderColor = "#000000";
+                    document.getElementById('canvas-zone').style.background = "#000000"; 
+                    
+                    let voidLeft = 71;
+                    let voidTimer = setInterval(function() {
+                        document.getElementById('time-display').innerText = "Reset: " + voidLeft + "s";
+                        voidLeft--;
+                        if (voidLeft < 0) {
+                            clearInterval(voidTimer);
+                            if (audioCtx) { audioCtx.close(); }
+                            document.getElementById('status-text').innerText = "Harmonization complete. You may open your eyes.";
+                            document.getElementById('time-display').innerText = "";
+                            document.getElementById('canvas-zone').style.borderColor = "#415a77";
+                            document.getElementById('canvas-zone').style.background = "radial-gradient(circle, #1b263b 0%, #0d1b2a 100%)";
+                            document.getElementById('start-btn').disabled = false;
+                        }
+                    }, 1000);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
